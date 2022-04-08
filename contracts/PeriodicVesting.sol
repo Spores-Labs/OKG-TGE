@@ -30,7 +30,6 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
     bool public locked;
     PoolPolicy[] public policies;
 
-
     address[] beneficiariesList;
     mapping(address => Beneficiary) public beneficiaries;
 
@@ -167,7 +166,7 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
         override
         returns (uint256 _amount)
     {
-        Beneficiary memory _bene = beneficiaries[_beneficiary]; 
+        Beneficiary memory _bene = beneficiaries[_beneficiary];
         PoolPolicy memory _policy = policies[_bene.policy];
         uint256 tgeAmnt = (_bene.allocated * _policy.TGEratio) /
             _policy.TGEdenom;
@@ -175,7 +174,10 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
             _amount += tgeAmnt;
         }
 
-        if (block.timestamp < _policy.vestingEnd && block.timestamp > _policy.vestingStart) {
+        if (
+            block.timestamp < _policy.vestingEnd &&
+            block.timestamp > _policy.vestingStart
+        ) {
             uint256 numberPeriod = (block.timestamp - _policy.vestingStart) /
                 _policy.period +
                 1;
@@ -188,8 +190,13 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
 
         _amount -= _bene.claimed;
     }
-    
-    function claimed(address _beneficiary) external view override returns (uint256) {
+
+    function claimed(address _beneficiary)
+        external
+        view
+        override
+        returns (uint256)
+    {
         return beneficiaries[_beneficiary].claimed;
     }
 
@@ -205,9 +212,11 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
         claim(_msgSender());
     }
 
-
     function claim(address _beneficiary) internal {
-        require(beneficiaries[_beneficiary].allocated != 0, "Beneficiary not existed");
+        require(
+            beneficiaries[_beneficiary].allocated != 0,
+            "Beneficiary not existed"
+        );
 
         uint256 _amount = getAvailAmt(_beneficiary);
         if (_amount == 0) {
