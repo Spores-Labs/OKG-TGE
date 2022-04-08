@@ -30,7 +30,7 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
     bool public locked;
     PoolPolicy[] public policies;
 
-    address[] beneficiariesList;
+    address[] public beneficiariesList;
     mapping(address => Beneficiary) public beneficiaries;
 
     event Released(
