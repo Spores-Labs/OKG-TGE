@@ -413,6 +413,48 @@ describe('PeriodicVesting contract', () => {
     expect(balanceChange[balanceChange.length - 1]).deep.equal(totalAmount);
   });
 
+  it('return correct amount after a number of periods when TGEpercent is 0', async () => {
+    const beneficiary = users[0];
+    const totalAmount = BigNumber.from(100000);
+    const initBal = await token.balanceOf(beneficiary.address);
+    const expectedVesting = totalAmount;
+    const periodReturn = expectedVesting.mul(60).div(3600);
+    let balanceChange = [];
+
+    const curr = (await ethers.provider.getBlock('latest')).timestamp;
+    const policy = [
+      0,
+      10000,
+      curr + 3600,
+      curr + 7200,
+      curr + 3600 * 3 - 60,
+      60,
+    ];
+    await vesting.setPolicy.apply(null, policy);
+    await vesting.addBeneficiary(beneficiary.address, totalAmount, 0);
+    await vesting.lock();
+
+    await ethers.provider.send('evm_setNextBlockTimestamp', [curr + 3600 + 1]);
+    await vesting.connect(beneficiary).claim();
+    const tgeBal = await token.balanceOf(beneficiary.address);
+    balanceChange.push(tgeBal);
+
+    for (
+      let time = curr + 7200 + 1;
+      time <= curr + 3600 * 3 - 60 + 1;
+      time = time + 60
+    ) {
+      await ethers.provider.send('evm_setNextBlockTimestamp', [time]);
+      await vesting.connect(beneficiary).claim();
+      const newBal = await token.balanceOf(beneficiary.address);
+      balanceChange.push(newBal);
+    }
+    balanceChange = balanceChange.map((b) => b.sub(initBal));
+
+    expect(balanceChange[0]).deep.equal(0);
+    expect(balanceChange[balanceChange.length - 1]).deep.equal(totalAmount);
+  });
+
   it('cannot claim if balance is insufficient when TGE', async () => {
     const beneficiary = users[0];
     const totalAmount = contractBal.mul(5);
