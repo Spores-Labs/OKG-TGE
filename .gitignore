@@ -1,0 +1,13 @@
+# Dependency directories
+node_modules/
+
+# build folder
+build/
+deployments/
+typechain/
+
+# dotenv environment variables file
+.env
+.vscode/
+
+

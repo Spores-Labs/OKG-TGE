@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "./config/**/*.ts",
+    "./deploy",
+    "./scripts/**/*.ts",
+    "./test/**/*.ts",
+    "./typechain-types"
+  ],
+  "files": ["./hardhat.config.ts"]
+}
