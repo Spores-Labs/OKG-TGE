@@ -33,6 +33,7 @@ module.exports = {
       accounts: {
         count: 10,
       },
+      gasPrice: 10000000000,
       live: false,
       saveDeployments: false,
     },

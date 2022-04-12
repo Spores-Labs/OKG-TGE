@@ -1,4 +1,4 @@
-import { getPools, getTotal, upfronts } from '../config';
+import { getPools, getTotal } from '../config';
 
 module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
   const network: string = hardhatArguments.network
@@ -8,6 +8,7 @@ module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
   console.log('deployed by:', deployer.address);
 
   const { deploy, get, execute } = deployments;
+  const initBal = await ethers.provider.getBalance(deployer.address);
 
   const okg = await get('OKGToken');
 
@@ -43,4 +44,8 @@ module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
   }
 
   await execute('OKGToken', executeConf, 'transfer', vesting.address, total);
+  const newBal = await ethers.provider.getBalance(deployer.address);
+  console.log(
+    `gas cost: ${ethers.utils.formatEther(initBal.sub(newBal).toString())}`
+  );
 };
