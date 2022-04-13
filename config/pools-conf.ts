@@ -1,13 +1,17 @@
 import { BigNumber, BigNumberish, utils } from 'ethers';
-import pools from './pools.json';
+import pools from './pools';
+
+type Configuration = {
+  TGE: string | number,
+  pools: PoolsConfig[],
+}
 
 type PoolsConfig = {
   name: string;
-  TGEtime: string | number;
   TGEpercentage: number;
-  vestingStart: string | number;
-  vestingEnd: string | number;
+  vestingCliff: number;
   vestingPeriod: number;
+  vestingCount: number;
   accounts: Account[];
 };
 
@@ -49,10 +53,10 @@ const toAccountParam = (accounts: Account[]): AccountParam => {
   }, [[], []]);
 };
 
-const toParam = (pool: PoolsConfig): number[] => {
-  const tgeTime = parseTimestamp(pool.TGEtime);
-  const vestingStart = parseTimestamp(pool.vestingStart);
-  const vestingEnd = parseTimestamp(pool.vestingEnd);
+const toParam = (pool: PoolsConfig, TGE: string | number): number[] => {
+  const tgeTime = parseTimestamp(TGE);
+  const vestingStart = tgeTime + pool.vestingCliff;
+  const vestingEnd = tgeTime + (pool.vestingCount - 1) * pool.vestingPeriod;
   const percent = Math.floor(pool.TGEpercentage * 100);
   return [
     percent,
@@ -71,10 +75,15 @@ export const getTotalVesting = (pools: PoolsParams[]): BigNumber => {
   return pools.map(sumReduce).reduce((acc, curr) => acc.add(curr), BigNumber.from(0));
 }
 
+export const getUpfront = () => {
+  return pools.upfront;
+}
+
 export const getPoolConfig = (): PoolsParams[] => {
-  return (pools as PoolsConfig[]).map((p: PoolsConfig) => {
+  const poolConf = pools as Configuration;
+  return poolConf.pools.map((p: PoolsConfig) => {
     return {
-      params: toParam(p),
+      params: toParam(p, poolConf.TGE),
       accounts: toAccountParam(p.accounts),
     };
   });

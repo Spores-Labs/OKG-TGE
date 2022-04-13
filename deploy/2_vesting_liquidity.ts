@@ -1,4 +1,4 @@
-import { getPools, getTotal } from '../config';
+import * as conf from '../config';
 
 module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
   const network: string = hardhatArguments.network
@@ -29,8 +29,8 @@ module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
     executeConf,
     'setPolicy',
   ] as any[];
-  const config = getPools();
-  const total = getTotal(config);
+  const config = conf.pools;
+  const total = conf.total;
 
   for (let i = 0; i < config.length; i++) {
     await execute.apply(null, executePolicyParam.concat(config[i].params));
