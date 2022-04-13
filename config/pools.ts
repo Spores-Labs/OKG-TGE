@@ -83,7 +83,7 @@ export = {
       TGEpercentage: 0,
       vestingCliff: 12 * MONTH,
       vestingPeriod: MONTH,
-      vestingCount: 24,
+      vestingCount: 25,
       accounts: [
         {
           address: '0xbc595da2877a258a431226ac8a337a80127b0856',
