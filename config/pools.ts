@@ -1,15 +1,16 @@
 import { utils } from "ethers";
 
-const MONTH = 3600 * 24 * 30;
+const DAY = 3600 * 24;
+const MONTH = DAY * 30;
 const QUARTER = MONTH * 3;
 
 export = {
-  TGE: '2022-05-19T00:00:00Z',
+  TGE: '2022-05-20T00:00:00Z',
   pools: [
     {
       name: 'seed',
       TGEpercentage: 5,
-      vestingCliff: QUARTER,
+      vestingCliff: QUARTER + DAY,
       vestingPeriod: QUARTER,
       vestingCount: 6,
       accounts: [
@@ -22,22 +23,22 @@ export = {
     {
       name: 'private',
       TGEpercentage: 5,
-      vestingCliff: QUARTER,
+      vestingCliff: QUARTER + DAY,
       vestingPeriod: QUARTER,
       vestingCount: 5,
       accounts: [
         {
           address: '0x566d8f15d155b4eead113faf1269ec124492750d',
-          total: 46000000,
+          total: 42000000,
         },
       ],
     },
     {
       name: 'team & advisors & reserve',
       TGEpercentage: 0,
-      vestingCliff: 0,
+      vestingCliff: 12 * MONTH + DAY,
       vestingPeriod: MONTH,
-      vestingCount: 7,
+      vestingCount: 25,
       accounts: [
         {
           address: '0x45745c9b881860de8e25b5ba7f055d007f252ca3',
@@ -53,16 +54,16 @@ export = {
         },
         {
           address: '0xd0b2580057355e9a83b753cd2fbf8e3897ed4576',
-          total: 51000000,
+          total: 59000000,
         },
       ],
     },
     {
       name: 'marketing',
       TGEpercentage: 0,
-      vestingCliff: 0,
+      vestingCliff: DAY,
       vestingPeriod: MONTH,
-      vestingCount: 37,
+      vestingCount: 7,
       accounts: [
         {
           address: '0xb660873740841deedfc3ba14839e3bb3c5a803f8',
@@ -81,9 +82,9 @@ export = {
     {
       name: 'earn & staking',
       TGEpercentage: 0,
-      vestingCliff: 12 * MONTH,
+      vestingCliff: DAY,
       vestingPeriod: MONTH,
-      vestingCount: 25,
+      vestingCount: 37,
       accounts: [
         {
           address: '0xbc595da2877a258a431226ac8a337a80127b0856',
@@ -109,7 +110,7 @@ export = {
     // public sale
     {
       address: '0x8fc11151355e0f7e3351c7bdf5015b10b4e1ccf8',
-      total: utils.parseUnits('20000000', 18),
+      total: utils.parseUnits('16000000', 18),
     },
   ],
 };
