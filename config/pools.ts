@@ -15,7 +15,7 @@ export = {
       vestingCount: 6,
       accounts: [
         {
-          address: '0x16efa79798245378aa50ec23020a638a96439372',
+          address: '0x26017329764644f54F832fC549bF54A67BB75A92',
           total: 18000000,
         },
       ],
@@ -28,7 +28,7 @@ export = {
       vestingCount: 5,
       accounts: [
         {
-          address: '0x566d8f15d155b4eead113faf1269ec124492750d',
+          address: '0x3Be3B3272635255033affF51c42eC9B81A0f4bCe',
           total: 42000000,
         },
       ],
@@ -41,19 +41,19 @@ export = {
       vestingCount: 25,
       accounts: [
         {
-          address: '0x45745c9b881860de8e25b5ba7f055d007f252ca3',
+          address: '0xa982D3Cf68A71084113dAb8cD8983ec13aAcd57c',
           total: 50000000,
         },
         {
-          address: '0x4034b12ca765992c3c98adb86abb52c8893e717a',
+          address: '0x7eB642831F88e406CA76A39F98988613CC6E7500',
           total: 50000000,
         },
         {
-          address: '0x5e9c49d9c95e79f853fd6cf8b6065b3995c9b10c',
+          address: '0x598f74E9e9104ece6f9140577872895eEdC44230',
           total: 15000000,
         },
         {
-          address: '0xd0b2580057355e9a83b753cd2fbf8e3897ed4576',
+          address: '0xCf4Ef4291dcCE10E3c241A4a8238299F987c794e',
           total: 59000000,
         },
       ],
@@ -66,15 +66,15 @@ export = {
       vestingCount: 7,
       accounts: [
         {
-          address: '0xb660873740841deedfc3ba14839e3bb3c5a803f8',
+          address: '0xbbb2905D5e918887d06a11c7ef150aBB65126b43',
           total: 25000000,
         },
         {
-          address: '0xc99b9d4bbb924e3dec23db4a65cadd250845e8db',
+          address: '0x2b16Ae2027D08b49fEa85b1B1Fe1f0fcDa16D22E',
           total: 25000000,
         },
         {
-          address: '0xc0d773ca30871fef7c21cedfa60d380215d45a3d',
+          address: '0x1fbD1f88f8b2947db7D4E7a0F059701286410dF3',
           total: 25000000,
         },
       ],
@@ -87,7 +87,7 @@ export = {
       vestingCount: 37,
       accounts: [
         {
-          address: '0xbc595da2877a258a431226ac8a337a80127b0856',
+          address: '0x46604c4f6214dFbE0bab5c21247B3ADE06Bcc94a',
           total: 150000000,
         },
       ],
@@ -96,20 +96,20 @@ export = {
   upfront: [
     //liquidity
     {
-      address: '0xe7191ceaddd1cf90616a54d7eae57945a4c8c122',
+      address: '0x5EFdb548B492136Ba9c0BFEd663AD414bF3bF56b',
       total: utils.parseUnits('7500000', 18),
     },
     {
-      address: '0x70e391b4b92692ddefbf133911215d08bbb03ab5',
+      address: '0x56e9CAF390214efF4C6B682B0a8E3C96acb43EFa',
       total: utils.parseUnits('7500000', 18),
     },
     {
-      address: '0xecac15b131de8bd23f56ae34dd68febdada375e4',
+      address: '0x463761780293Ee851F12F74979C9e3b7B9cCeaC5',
       total: utils.parseUnits('10000000', 18),
     },
     // public sale
     {
-      address: '0x8fc11151355e0f7e3351c7bdf5015b10b4e1ccf8',
+      address: '0x9785370ca863dF3Ed5fa97eeAB47384964d39615',
       total: utils.parseUnits('16000000', 18),
     },
   ],

@@ -45,12 +45,12 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
     }
 
     modifier zeroAddr(address _addr) {
-        require(_addr != address(0), "Set zero address");
+        require(_addr != address(0), "Address must not be zero");
         _;
     }
 
     constructor(address _token) Ownable() {
-        require(_token != address(0), "Set zero address");
+        require(_token != address(0), "Address must not be zero");
         token = IERC20(_token);
     }
 
