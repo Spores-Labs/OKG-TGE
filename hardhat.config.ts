@@ -50,7 +50,7 @@ module.exports = {
       url: process.env.MATIC_POLYGON_PROVIDER,
       chainId: 137,
       gasPrice: 30000000000,
-      accounts: [process.env.OWNER_PRIV_KEY],
+      accounts: [process.env.MAINNET_DEPLOYER],
       timeout: 9000000,
       live: true,
     },
@@ -70,7 +70,7 @@ module.exports = {
     },
     bscmainnet: {
       url: process.env.BSC_TESTNET_PROVIDER,
-      accounts: [process.env.OWNER_PRIV_KEY],
+      accounts: [process.env.MAINNET_DEPLOYER],
       timeout: 9000000,
       gasPrice: 10000000000,
       chainId: 56,
