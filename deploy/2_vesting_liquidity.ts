@@ -33,6 +33,7 @@ module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
   const total = conf.total;
 
   for (let i = 0; i < config.length; i++) {
+    console.log(config[i].params);
     await execute.apply(null, executePolicyParam.concat(config[i].params));
 
     const policies = [new Array(config[i].accounts[0].length).fill(i)];
@@ -43,7 +44,10 @@ module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
     await execute.apply(null, addBeneficiariesParam);
   }
 
-  await execute('OKGToken', executeConf, 'transfer', vesting.address, total);
+  // for (const u of upfronts) {
+  //   await execute('OKGToken', executeConf, 'transfer', u.address, u.total);
+  // }
+  // await execute('OKGToken', executeConf, 'transfer', vesting.address, total);
   const newBal = await ethers.provider.getBalance(deployer.address);
   console.log(
     `gas cost: ${ethers.utils.formatEther(initBal.sub(newBal).toString())}`

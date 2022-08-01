@@ -56,7 +56,7 @@ const toAccountParam = (accounts: Account[]): AccountParam => {
 const toParam = (pool: PoolsConfig, TGE: string | number): number[] => {
   const tgeTime = parseTimestamp(TGE);
   const vestingStart = tgeTime + pool.vestingCliff;
-  const vestingEnd = tgeTime + (pool.vestingCount - 1) * pool.vestingPeriod;
+  const vestingEnd = vestingStart + ((pool.vestingCount - 1) * pool.vestingPeriod);
   const percent = Math.floor(pool.TGEpercentage * 100);
   return [
     percent,

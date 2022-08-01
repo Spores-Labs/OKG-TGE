@@ -21,10 +21,8 @@ module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
     log: true,
   };
 
-  const okg = await deploy('OKGToken', deployTokenConf);
-  for (const u of upfronts) {
-    await execute('OKGToken', executeConf, 'transfer', u.address, u.total);
-  }
+  await deploy('OKGToken', deployTokenConf);
+
   const newBal = await ethers.provider.getBalance(deployer.address);
   console.log(
     `gas cost: ${ethers.utils.formatEther(initBal.sub(newBal).toString())}`
