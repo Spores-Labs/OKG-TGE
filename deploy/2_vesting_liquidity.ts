@@ -1,4 +1,6 @@
+import { Contract } from 'ethers';
 import * as conf from '../config';
+import { PeriodicVesting } from '../typechain';
 
 module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
   const network: string = hardhatArguments.network
@@ -22,7 +24,7 @@ module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
     log: true,
   };
 
-  const vesting = await deploy('PeriodicVesting', deployVestingConf);
+  await deploy('PeriodicVesting', deployVestingConf);
 
   const executePolicyParam = [
     'PeriodicVesting',
@@ -30,10 +32,8 @@ module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
     'setPolicy',
   ] as any[];
   const config = conf.pools;
-  const total = conf.total;
 
   for (let i = 0; i < config.length; i++) {
-    console.log(config[i].params);
     await execute.apply(null, executePolicyParam.concat(config[i].params));
 
     const policies = [new Array(config[i].accounts[0].length).fill(i)];
