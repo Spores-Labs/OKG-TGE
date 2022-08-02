@@ -118,19 +118,20 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
         Not allow Owner to alter the vesting policy
         @param _beneficiary `_beneficiary` address
         @param _totalAmt Amount that `_beneficiary` can claim in total
+        @param _policy index of the correspond policy for beneficiary
     */
     function addBeneficiary(
         address _beneficiary,
         uint256 _totalAmt,
-        uint256 policy
+        uint256 _policy
     ) public onlyOwner isNotLocked zeroAddr(_beneficiary) {
         require(
             _beneficiary != address(0),
             "beneficiary must not be address zero"
         );
-        require(policy < policies.length, "Policy not existed");
+        require(_policy < policies.length, "Policy not existed");
         require(beneficiaries[_beneficiary].allocated == 0, "Already added");
-        beneficiaries[_beneficiary] = Beneficiary(_totalAmt, 0, policy);
+        beneficiaries[_beneficiary] = Beneficiary(_totalAmt, 0, _policy);
 
         beneficiariesList.push(_beneficiary);
     }
@@ -202,7 +203,7 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
 
     /**
         @notice Beneficiaries use this method to claim vesting tokens
-        @dev Caller can be ANY
+        @dev Caller can be any
         Note: 
         - Only Beneficiaries, who were added into the list, are able to claim tokens
         - If `_policy`, that binds to msg.sender, is not found -> revert
@@ -230,10 +231,6 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
     /**
         @notice Owner call this to realease token to all beneficiaries
         @dev Caller can be owner only
-        Note: 
-        - Only Beneficiaries, who were added into the list, are able to claim tokens
-        - If `_policy`, that binds to msg.sender, is not found -> revert
-        - Previously unclaimed amounts will be accumulated
     */
     function release() external override nonReentrant onlyOwner {
         for (uint256 i = 0; i < beneficiariesList.length; i++) {
