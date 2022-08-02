@@ -3,7 +3,7 @@ import chaiAsPromised from 'chai-as-promised';
 import { OKGToken, PeriodicVesting } from '../typechain';
 import { ethers } from 'hardhat';
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { BigNumber, utils } from 'ethers';
+import { BigNumber } from 'ethers';
 
 use(chaiAsPromised);
 const decimal = BigNumber.from(10).pow(18);
@@ -21,7 +21,7 @@ describe('PeriodicVesting contract', () => {
     token = (await tokenDeployer.deploy(
       'Ookeenga',
       'OKG',
-      contractBal.mul(1000),
+      contractBal.mul(1000)
     )) as OKGToken;
   });
 
@@ -490,5 +490,82 @@ describe('PeriodicVesting contract', () => {
     await expect(claimTx).revertedWith(
       'ERC20: transfer amount exceeds balance'
     );
+  });
+
+  it('owner can withdraw before vesting', async () => {
+    const beneficiary = users[0];
+    const totalAmount = BigNumber.from(100000);
+    const initBal = await token.balanceOf(deployer.address);
+
+    const curr = (await ethers.provider.getBlock('latest')).timestamp;
+    const policy = [
+      2500,
+      10000,
+      curr + 3600,
+      curr + 7200,
+      curr + 3600 * 3 - 60,
+      60,
+    ];
+    await vesting.setPolicy.apply(null, policy);
+    await vesting.addBeneficiary(beneficiary.address, totalAmount, 0);
+    await vesting.lock();
+
+    await vesting.withdraw();
+    const ownerBal = await token.balanceOf(deployer.address);
+
+    expect(ownerBal.sub(initBal)).deep.equal(contractBal);
+  });
+
+  it('owner can withdraw after a period', async () => {
+    const beneficiary = users[0];
+    const totalAmount = BigNumber.from(100000);
+    const initBal = await token.balanceOf(deployer.address);
+    const expectedTGE = totalAmount.mul(2500).div(10000);
+    const expectedVesting = totalAmount.sub(expectedTGE);
+    const periodReturn = expectedVesting.mul(60).div(3600);
+    const expectedVested = expectedTGE.add(periodReturn);
+
+    const curr = (await ethers.provider.getBlock('latest')).timestamp;
+    const policy = [
+      2500,
+      10000,
+      curr + 3600,
+      curr + 7200,
+      curr + 3600 * 3 - 60,
+      60,
+    ];
+    await vesting.setPolicy.apply(null, policy);
+    await vesting.addBeneficiary(beneficiary.address, totalAmount, 0);
+    await vesting.lock();
+
+    const time = curr + 7200 + 1;
+    await ethers.provider.send('evm_setNextBlockTimestamp', [time]);
+    await vesting.connect(beneficiary).claim();
+
+    await vesting.withdraw();
+    const ownerBal = await token.balanceOf(deployer.address);
+
+    expect(ownerBal.sub(initBal)).deep.equal(contractBal.sub(expectedVested));
+  });
+
+  it('non owner cannot withdraw', async () => {
+    const beneficiary = users[0];
+    const totalAmount = BigNumber.from(100000);
+
+    const curr = (await ethers.provider.getBlock('latest')).timestamp;
+    const policy = [
+      2500,
+      10000,
+      curr + 3600,
+      curr + 7200,
+      curr + 3600 * 3 - 60,
+      60,
+    ];
+    await vesting.setPolicy.apply(null, policy);
+    await vesting.addBeneficiary(beneficiary.address, totalAmount, 0);
+    await vesting.lock();
+
+    const tx = vesting.connect(beneficiary).withdraw();
+    await expect(tx).rejectedWith('Ownable: caller is not the owner');
   });
 });

@@ -1,0 +1,70 @@
+import { expect, use } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import { OKGToken, PeriodicVesting } from '../typechain';
+import { ethers } from 'hardhat';
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { BigNumber } from 'ethers';
+
+use(chaiAsPromised);
+const decimal = BigNumber.from(10).pow(18);
+const contractBal = decimal.mul(100000000);
+
+describe('OKGToken contract', () => {
+  let deployer: SignerWithAddress, users: SignerWithAddress[];
+  let token: OKGToken;
+
+  beforeEach(async () => {
+    [deployer, ...users] = await ethers.getSigners();
+    const tokenDeployer = await ethers.getContractFactory('OKGToken', deployer);
+
+    token = (await tokenDeployer.deploy(
+      'Ookeenga',
+      'OKG',
+      contractBal.mul(1000)
+    )) as OKGToken;
+
+    users.forEach((u) =>
+      token.connect(deployer).transfer(u.address, contractBal)
+    );
+  });
+
+  it('can pause all transfer', async () => {
+    await token.pause();
+
+    await expect(
+      token.connect(users[0]).transfer(users[1].address, 1)
+    ).rejectedWith('ERC20Pausable: token transfer while paused');
+    await expect(
+      token.connect(users[1]).transfer(users[0].address, 1)
+    ).rejectedWith('ERC20Pausable: token transfer while paused');
+  });
+
+  it('can transfer after unpause', async () => {
+    await token.pause();
+
+    await expect(
+      token.connect(users[0]).transfer(users[1].address, 1)
+    ).rejectedWith('ERC20Pausable: token transfer while paused');
+    await expect(
+      token.connect(users[1]).transfer(users[0].address, 1)
+    ).rejectedWith('ERC20Pausable: token transfer while paused');
+
+    await token.unpause();
+    await expect(token.connect(users[0]).transfer(users[1].address, 1))
+      .fulfilled;
+  });
+
+  it('can blacklist user', async () => {
+    await token.blacklist(users[0].address, true);
+
+    await expect(
+      token.connect(users[0]).transfer(users[1].address, 1)
+    ).rejectedWith('Transfer blacklisted');
+    await expect(
+      token.connect(users[1]).transfer(users[0].address, 1)
+    ).rejectedWith('Transfer blacklisted');
+    await expect(
+      token.connect(users[1]).transfer(users[2].address, 1)
+    ).fulfilled;
+  });
+});

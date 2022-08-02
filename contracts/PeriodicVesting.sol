@@ -241,6 +241,15 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
         }
     }
 
+    /**
+        @notice Owner call this to withdraw all vesting token
+        @dev Caller can be owner only
+    */
+    function withdraw() external onlyOwner {
+        uint256 bal = token.balanceOf(address(this));
+        token.safeTransfer(_msgSender(), bal);
+    }
+
     function _releaseTokenTo(
         address _beneficiary,
         uint256 _now,
