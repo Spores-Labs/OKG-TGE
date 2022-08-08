@@ -1,22 +1,32 @@
+import { Contract } from 'ethers';
 import { deployments, ethers } from 'hardhat';
 import { total, upfronts } from '../config';
+import { OKGToken } from '../typechain';
 
 async function main() {
   const [deployer] = await ethers.getSigners();
-  console.log('deploy from address: ', deployer.address);
+  console.log('execute from address: ', deployer.address);
 
-  const { execute, get } = deployments;
+  const { get } = deployments;
   const executeConf = {
     from: deployer.address,
     log: true,
   };
 
   const vesting = await get('PeriodicVesting');
+  const token = await get('OKGToken');
+
+  const tokenContract = new Contract(token.address, token.abi, deployer) as OKGToken;
 
   for (const u of upfronts) {
-    await execute('OKGToken', executeConf, 'transfer', u.address, u.total);
+    console.log('transfer to', u.address, 'amount of', ethers.utils.formatEther(u.total));
+    await tokenContract.transfer(u.address, u.total);
   }
-  await execute('OKGToken', executeConf, 'transfer', vesting.address, total);
+  console.log(
+    'transfer to vesting amount of',
+    ethers.utils.formatEther(total)
+  );
+  await tokenContract.transfer(vesting.address, total);
 }
 
 main()

@@ -26,24 +26,6 @@ module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
 
   await deploy('PeriodicVesting', deployVestingConf);
 
-  const executePolicyParam = [
-    'PeriodicVesting',
-    executeConf,
-    'setPolicy',
-  ] as any[];
-  const config = conf.pools;
-
-  for (let i = 0; i < config.length; i++) {
-    await execute.apply(null, executePolicyParam.concat(config[i].params));
-
-    const policies = [new Array(config[i].accounts[0].length).fill(i)];
-    const addBeneficiariesParam = (
-      ['PeriodicVesting', executeConf, 'addBeneficiaries'] as any[]
-    ).concat(config[i].accounts, policies);
-
-    await execute.apply(null, addBeneficiariesParam);
-  }
-
   // for (const u of upfronts) {
   //   await execute('OKGToken', executeConf, 'transfer', u.address, u.total);
   // }
