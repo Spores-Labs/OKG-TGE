@@ -16,6 +16,10 @@ contract OKGToken is ERC20Burnable, ERC20Pausable, Ownable {
         _mint(_msgSender(), _initialSupply);
     }
 
+    function mint(address _to, uint256 _amount) external onlyOwner {
+        _mint(_to, _amount);
+    }
+
     /**
      * @dev Pauses all token transfers.
      * Requirements:
