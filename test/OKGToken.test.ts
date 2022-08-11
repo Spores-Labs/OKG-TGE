@@ -33,10 +33,22 @@ describe('OKGToken contract', () => {
 
     await expect(
       token.connect(users[0]).transfer(users[1].address, 1)
-    ).rejectedWith('ERC20Pausable: token transfer while paused');
+    ).rejectedWith('Transfer paused');
     await expect(
       token.connect(users[1]).transfer(users[0].address, 1)
-    ).rejectedWith('ERC20Pausable: token transfer while paused');
+    ).rejectedWith('Transfer paused');
+  });
+
+  it('whitelist user can transfer after pause', async () => {
+    await token.pause();
+    await token.whitelist(users[0].address, true);
+
+    await expect(
+      token.connect(users[0]).transfer(users[1].address, 1)
+    ).fulfilled;
+    await expect(
+      token.connect(users[1]).transfer(users[0].address, 1)
+    ).rejectedWith('Transfer paused');
   });
 
   it('can transfer after unpause', async () => {
@@ -44,10 +56,10 @@ describe('OKGToken contract', () => {
 
     await expect(
       token.connect(users[0]).transfer(users[1].address, 1)
-    ).rejectedWith('ERC20Pausable: token transfer while paused');
+    ).rejectedWith('Transfer paused');
     await expect(
       token.connect(users[1]).transfer(users[0].address, 1)
-    ).rejectedWith('ERC20Pausable: token transfer while paused');
+    ).rejectedWith('Transfer paused');
 
     await token.unpause();
     await expect(token.connect(users[0]).transfer(users[1].address, 1))
