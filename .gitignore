@@ -3,7 +3,7 @@ node_modules/
 
 # build folder
 build/
-deployments/
+deployments/development
 typechain/
 
 # dotenv environment variables file
