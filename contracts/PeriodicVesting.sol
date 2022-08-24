@@ -125,10 +125,6 @@ contract PeriodicVesting is Ownable, ReentrancyGuard, IVesting {
         uint256 _totalAmt,
         uint256 _policy
     ) public onlyOwner isNotLocked zeroAddr(_beneficiary) {
-        require(
-            _beneficiary != address(0),
-            "beneficiary must not be address zero"
-        );
         require(_policy < policies.length, "Policy not existed");
         require(beneficiaries[_beneficiary].allocated == 0, "Already added");
         beneficiaries[_beneficiary] = Beneficiary(_totalAmt, 0, _policy);
