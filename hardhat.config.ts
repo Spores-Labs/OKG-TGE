@@ -69,7 +69,7 @@ module.exports = {
       chainId: 97,
     },
     bscmainnet: {
-      url: process.env.BSC_TESTNET_PROVIDER,
+      url: process.env.BSC_MAINNET_PROVIDER,
       accounts: [process.env.MAINNET_DEPLOYER],
       timeout: 9000000,
       gasPrice: 10000000000,
