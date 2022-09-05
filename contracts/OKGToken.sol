@@ -22,16 +22,14 @@ contract OKGToken is ERC20Burnable, Pausable, Ownable {
     bool public bpEnabled;
     bool public bpDisabledForever;
 
+    bool public blackListedDisabled;
+
     constructor(
         string memory _name,
         string memory _symbol,
         uint256 _initialSupply
     ) ERC20(_name, _symbol) {
         _mint(_msgSender(), _initialSupply);
-    }
-
-    function mint(address _to, uint256 _amount) external onlyOwner {
-        _mint(_to, _amount);
     }
 
     /**
@@ -86,13 +84,22 @@ contract OKGToken is ERC20Burnable, Pausable, Ownable {
         bpDisabledForever = true;
     }
 
+    /**
+     * @dev Disable blacklist function forever
+     * Requirements:
+     * - the caller must must be owner.
+     */
+    function disableBlacklist() public onlyOwner {
+        blackListedDisabled = true;
+    }
+
     function _beforeTokenTransfer(
         address from,
         address to,
         uint256 amount
     ) internal override(ERC20) {
         require(
-            !(blacklisted[from] || blacklisted[to]),
+            blackListedDisabled || !(blacklisted[from] || blacklisted[to]),
             "Transfer blacklisted"
         );
         require(!paused() || whitelisted[_msgSender()], "Transfer paused");
