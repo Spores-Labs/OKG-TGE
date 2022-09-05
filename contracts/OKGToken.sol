@@ -23,6 +23,7 @@ contract OKGToken is ERC20Burnable, Pausable, Ownable {
     bool public bpDisabledForever;
 
     bool public blackListedDisabled;
+    bool public pauseDisabled;
 
     constructor(
         string memory _name,
@@ -38,6 +39,7 @@ contract OKGToken is ERC20Burnable, Pausable, Ownable {
      * - the caller must must be owner.
      */
     function pause() external onlyOwner {
+        require(!pauseDisabled, "Pause transfer disabled");
         _pause();
     }
 
@@ -47,6 +49,16 @@ contract OKGToken is ERC20Burnable, Pausable, Ownable {
      * - the caller must be owner.
      */
     function unpause() external onlyOwner {
+        _unpause();
+    }
+
+        /**
+     * @dev Pauses all token transfers.
+     * Requirements:
+     * - the caller must must be owner.
+     */
+    function disablePause() external onlyOwner {
+        pauseDisabled = true;
         _unpause();
     }
 

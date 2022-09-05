@@ -65,6 +65,37 @@ describe('OKGToken contract', () => {
       .fulfilled;
   });
 
+  it('can transfer after disable pause', async () => {
+    await token.pause();
+
+    await expect(
+      token.connect(users[0]).transfer(users[1].address, 1)
+    ).rejectedWith('Transfer paused');
+    await expect(
+      token.connect(users[1]).transfer(users[0].address, 1)
+    ).rejectedWith('Transfer paused');
+
+    await token.disablePause();
+    await expect(token.connect(users[0]).transfer(users[1].address, 1))
+      .fulfilled;
+  });
+
+  it('can\'t pause after disable pause', async () => {
+    await token.pause();
+
+    await expect(
+      token.connect(users[0]).transfer(users[1].address, 1)
+    ).rejectedWith('Transfer paused');
+    await expect(
+      token.connect(users[1]).transfer(users[0].address, 1)
+    ).rejectedWith('Transfer paused');
+
+    await token.disablePause();
+    await expect(token.connect(users[0]).transfer(users[1].address, 1))
+      .fulfilled;
+    await expect(token.pause()).rejectedWith('Pause transfer disabled');
+  });
+
   it('can blacklist user', async () => {
     await token.blacklist(users[0].address, true);
 
