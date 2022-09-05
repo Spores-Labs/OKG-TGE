@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -14,7 +13,7 @@ interface IBPContract {
     ) external;
 }
 
-contract OKGToken is ERC20Burnable, ERC20Capped, Pausable, Ownable {
+contract OKGToken is ERC20Burnable, Pausable, Ownable {
     mapping(address => bool) public blacklisted;
     mapping(address => bool) public whitelisted;
 
@@ -30,24 +29,8 @@ contract OKGToken is ERC20Burnable, ERC20Capped, Pausable, Ownable {
         string memory _name,
         string memory _symbol,
         uint256 _initialSupply
-    ) ERC20(_name, _symbol) ERC20Capped(_initialSupply) {
+    ) ERC20(_name, _symbol) {
         _mint(_msgSender(), _initialSupply);
-    }
-
-    /**
-     * @dev internal mint new token function.
-     */
-    function _mint(address account, uint256 amount) internal virtual override(ERC20Capped, ERC20) {
-        ERC20Capped._mint(account, amount);
-    }
-
-    /**
-     * @dev mint new token.
-     * Requirements:
-     * - the caller must must be owner.
-     */
-    function mint(address _to, uint256 _amount) external onlyOwner {
-        _mint(_to, _amount);
     }
 
     /**

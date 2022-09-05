@@ -131,14 +131,4 @@ describe('OKGToken contract', () => {
     await expect(token.connect(users[2]).transfer(users[1].address, 1))
       .fulfilled;
   });
-
-  it("can't mint more than inital supply", async () => {
-    const tx = token.mint(users[0].address, 1);
-    await expect(tx).rejectedWith('ERC20Capped: cap exceeded');
-  });
-
-  it('can mint after token burn', async () => {
-    await token.burn(100);
-    await expect(token.mint(users[0].address, 10)).fulfilled;
-  });
 });
