@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -13,7 +14,7 @@ interface IBPContract {
     ) external;
 }
 
-contract OKGToken is ERC20Burnable, Pausable, Ownable {
+contract OKGToken is ERC20Burnable, ERC20Capped, Pausable, Ownable {
     mapping(address => bool) public blacklisted;
     mapping(address => bool) public whitelisted;
 
@@ -23,13 +24,30 @@ contract OKGToken is ERC20Burnable, Pausable, Ownable {
     bool public bpDisabledForever;
 
     bool public blackListedDisabled;
+    bool public pauseDisabled;
 
     constructor(
         string memory _name,
         string memory _symbol,
         uint256 _initialSupply
-    ) ERC20(_name, _symbol) {
+    ) ERC20(_name, _symbol) ERC20Capped(_initialSupply) {
         _mint(_msgSender(), _initialSupply);
+    }
+
+    /**
+     * @dev internal mint new token function.
+     */
+    function _mint(address account, uint256 amount) internal virtual override(ERC20Capped, ERC20) {
+        ERC20Capped._mint(account, amount);
+    }
+
+    /**
+     * @dev mint new token.
+     * Requirements:
+     * - the caller must must be owner.
+     */
+    function mint(address _to, uint256 _amount) external onlyOwner {
+        _mint(_to, _amount);
     }
 
     /**
@@ -38,6 +56,7 @@ contract OKGToken is ERC20Burnable, Pausable, Ownable {
      * - the caller must must be owner.
      */
     function pause() external onlyOwner {
+        require(!pauseDisabled, "Pause transfer disabled");
         _pause();
     }
 
@@ -47,6 +66,16 @@ contract OKGToken is ERC20Burnable, Pausable, Ownable {
      * - the caller must be owner.
      */
     function unpause() external onlyOwner {
+        _unpause();
+    }
+
+        /**
+     * @dev Pauses all token transfers.
+     * Requirements:
+     * - the caller must must be owner.
+     */
+    function disablePause() external onlyOwner {
+        pauseDisabled = true;
         _unpause();
     }
 
