@@ -43,9 +43,8 @@ describe('OKGToken contract', () => {
     await token.pause();
     await token.whitelist(users[0].address, true);
 
-    await expect(
-      token.connect(users[0]).transfer(users[1].address, 1)
-    ).fulfilled;
+    await expect(token.connect(users[0]).transfer(users[1].address, 1))
+      .fulfilled;
     await expect(
       token.connect(users[1]).transfer(users[0].address, 1)
     ).rejectedWith('Transfer paused');
@@ -75,8 +74,30 @@ describe('OKGToken contract', () => {
     await expect(
       token.connect(users[1]).transfer(users[0].address, 1)
     ).rejectedWith('Transfer blacklisted');
+    await expect(token.connect(users[1]).transfer(users[2].address, 1))
+      .fulfilled;
+  });
+
+  it('can disable blacklist forever', async () => {
+    await token.blacklist(users[0].address, true);
+
     await expect(
-      token.connect(users[1]).transfer(users[2].address, 1)
-    ).fulfilled;
+      token.connect(users[0]).transfer(users[1].address, 1)
+    ).rejectedWith('Transfer blacklisted');
+    await expect(
+      token.connect(users[1]).transfer(users[0].address, 1)
+    ).rejectedWith('Transfer blacklisted');
+    await expect(token.connect(users[1]).transfer(users[2].address, 1))
+      .fulfilled;
+
+    await token.disableBlacklist();
+    await token.blacklist(users[2].address, true);
+
+    await expect(token.connect(users[0]).transfer(users[1].address, 1))
+      .fulfilled;
+    await expect(token.connect(users[1]).transfer(users[0].address, 1))
+      .fulfilled;
+    await expect(token.connect(users[2]).transfer(users[1].address, 1))
+      .fulfilled;
   });
 });
