@@ -5,7 +5,7 @@ const MONTH = DAY * 30;
 const QUARTER = MONTH * 3;
 
 export = {
-  TGE: '2022-10-13T10:00:00Z',
+  TGE: '2022-09-14 00:00:00Z',
   pools: [
     {
       name: 'team & advisors & reserve',
