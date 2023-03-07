@@ -30,11 +30,16 @@ async function main() {
 
   for (let i = 0; i < config.length; i++) {
     console.log('apply policy', config[i].params);
-    await contract.setPolicy.apply(null, config[i].params);
+    let tx = await contract.setPolicy.apply(null, config[i].params);
+    await tx.wait();
 
     const policies = [new Array(config[i].accounts[0].length).fill(i)];
     console.log('add beneficiaries', config[i].accounts.concat(policies));
-    await contract.addBeneficiaries.apply(null, config[i].accounts.concat(policies));
+    tx = await contract.addBeneficiaries.apply(
+      null,
+      config[i].accounts.concat(policies)
+    );
+    await tx.wait();
   }
 }
 

@@ -1,4 +1,4 @@
-import { token, upfronts } from '../config';
+import { token } from '../config';
 
 module.exports = async ({ ethers, deployments, hardhatArguments }: any) => {
   const network: string = hardhatArguments.network

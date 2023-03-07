@@ -1,4 +1,4 @@
-import { utils } from "ethers";
+import { utils } from 'ethers';
 
 const DAY = 3600 * 24;
 const MONTH = DAY * 30;
@@ -7,32 +7,6 @@ const QUARTER = MONTH * 3;
 export = {
   TGE: '2022-10-13T10:00:00Z',
   pools: [
-    {
-      name: 'seed',
-      TGEpercentage: 5,
-      vestingCliff: QUARTER + DAY,
-      vestingPeriod: QUARTER,
-      vestingCount: 6,
-      accounts: [
-        {
-          address: '0x26017329764644f54F832fC549bF54A67BB75A92',
-          total: 18000000,
-        },
-      ],
-    },
-    {
-      name: 'private',
-      TGEpercentage: 5,
-      vestingCliff: QUARTER + DAY,
-      vestingPeriod: QUARTER,
-      vestingCount: 5,
-      accounts: [
-        {
-          address: '0x3Be3B3272635255033affF51c42eC9B81A0f4bCe',
-          total: 42000000,
-        },
-      ],
-    },
     {
       name: 'team & advisors & reserve',
       TGEpercentage: 0,
@@ -93,24 +67,5 @@ export = {
       ],
     },
   ],
-  upfront: [
-    //liquidity
-    {
-      address: '0x5EFdb548B492136Ba9c0BFEd663AD414bF3bF56b',
-      total: utils.parseUnits('7500000', 18),
-    },
-    {
-      address: '0x56e9CAF390214efF4C6B682B0a8E3C96acb43EFa',
-      total: utils.parseUnits('7500000', 18),
-    },
-    {
-      address: '0x463761780293Ee851F12F74979C9e3b7B9cCeaC5',
-      total: utils.parseUnits('10000000', 18),
-    },
-    // public sale
-    {
-      address: '0x9785370ca863dF3Ed5fa97eeAB47384964d39615',
-      total: utils.parseUnits('16000000', 18),
-    },
-  ],
+  upfront: [],
 };
